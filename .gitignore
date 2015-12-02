@@ -1,0 +1,6 @@
+/Gemfile.lock
+.*.sw?
+*.sorted
+*.png
+*.dot
+*.log
