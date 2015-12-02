@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+## run the process
+##
+## get the command line parameters
+require 'optparse'
+require 'socket'
+require 'simp-processgraph'
+
+options = {}
+$inpfile = nil
+$outfile = nil
+$mysitename = nil
+optsparse = OptionParser.new do |opts|
+  opts.banner = "Usage: processgraph -s sitename [options]"
+  opts.on('-h', '--help', 'Help') do
+    puts opts
+    exit
+  end
+  opts.on('-s', '--my site NAME', 'Site Name (required!)') do
+    |s| puts "mysitename is #{s}"
+    $mysitename = s
+  end
+  opts.on('-i', '--input file NAME', 'Input file or directory name') do
+    |i| puts "input filename is #{i}"
+    $inpfile = i
+  end
+  out_msg =  'Outputfilename (will look for files in the directory named *.ss)'
+  opts.on('-o', '--output file NAME', out_msg) do
+    |o| puts "outfile is #{o}"
+    $outfile = o
+  end
+end
+optsparse.parse!
+if ($mysitename == nil) then
+  puts "Missing argument -s"
+  puts optsparse.banner
+  exit
+end
+
+theGraph = ProcessList.new($inpfile, $outfile)
+theGraph.processData($inpfile, $outfile, $mysitename)
+
+
