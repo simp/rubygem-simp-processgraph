@@ -1,0 +1,36 @@
+## run the process
+##
+## get the command line parameters
+require 'optparse'
+require 'gviz'
+require 'socket'
+require 'simp-processgraph'
+options = {}
+$inpfile = nil
+$outfile = nil
+
+# read in options
+OptionParser.new do |opts|
+  opts.banner = "Usage: ruby simp_processgraph.rb [options]"
+  opts.on('-h', '--help', 'Help') do
+    puts opts
+    exit
+  end
+
+  # input file or directoru
+  opts.on('-i', '--input filename NAME', 'Input file or directory name') do
+    |s| puts "input filename is #{s}"
+     $inpfile = s
+  end
+
+  # output file
+  out_msg =  'Output file name'
+  opts.on('-o', '--output file NAME', out_msg) do
+    |s| puts "outfile is #{s}"
+    $outfile = s
+  end
+end.parse!
+
+# create the graph and then the dot file
+mygraph = SimpProcessGraph_i4.new($inpfile, $outfile)
+mygraph.create_dot
