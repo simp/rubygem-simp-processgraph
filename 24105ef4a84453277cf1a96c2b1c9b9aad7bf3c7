@@ -1,0 +1,199 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac4a560_b01d1c12",
+        "filename": "Gemfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "No need for leading whitespace",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 5
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_df88dc24",
+        "filename": "Gemfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "These gems should be in the .gemspec, and referenced with the `gemspec` directive.",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 15
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_f01794eb",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "Trailing whitespace",
+      "range": {
+        "startLine": 6,
+        "startChar": 90,
+        "endLine": 6,
+        "endChar": 91
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_7f234805",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "no star needed",
+      "range": {
+        "startLine": 36,
+        "startChar": 22,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_10d4101f",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "Trailing whitespaces",
+      "range": {
+        "startLine": 4,
+        "startChar": 22,
+        "endLine": 4,
+        "endChar": 23
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_7ff50882",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "- use PNG for diagrams: http://lbrandy.com/assets/jpg_vs_png2.png\n- Executing dot with a shell command isn\u0027t necessary—you can save images directly from gviz: https://github.com/melborne/Gviz#usage",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_df129cb3",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "ᕕ( ᐛ )ᕗ",
+      "range": {
+        "startLine": 222,
+        "startChar": 2,
+        "endLine": 222,
+        "endChar": 5
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_3f88f01e",
+        "filename": "processgraph.gemspec",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "gviz requires ruby version 2.0 and above; this should be a requirement of the gem.\n\nSee: http://guides.rubygems.org/specification-reference/#required_ruby_version",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_bf73204c",
+        "filename": "processgraph.gemspec",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1005143
+      },
+      "writtenOn": "2015-12-04T18:07:03Z",
+      "side": 1,
+      "message": "Should probably be \u0027Apache-2.0\u0027",
+      "range": {
+        "startLine": 15,
+        "startChar": 20,
+        "endLine": 15,
+        "endChar": 22
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
