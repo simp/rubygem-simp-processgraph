@@ -117,6 +117,63 @@
     },
     {
       "key": {
+        "uuid": "5ac4a560_51e3dc32",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2015-12-07T15:24:38Z",
+      "side": 1,
+      "message": "Don\u0027t need to declare here",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_b1cb50a4",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2015-12-07T15:24:38Z",
+      "side": 1,
+      "message": "should not need a counter with the logic below",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_31e82010",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2015-12-07T15:24:38Z",
+      "side": 1,
+      "message": "I believe this logic can be simplified to a few splits.  Something like:\n\nIO.foreach(infile) do |line|\n  # create a hash for all the significant info \n  $procrow \u003d Hash.new\n  f1 \u003d line.split(\u0027 \u0027)\n\n  # now get process, owner and name\n  $procrow[\"proc_id\"] \u003d f1[1]\n  $procrow[\"owner\"] \u003d f1[2]\n  $procrow[\"procname\"] \u003d f1[0]\n\n  hosts \u003d f1[8].split(\u0027-\u003e\u0027)\n  $procrow[\"hostname\"] \u003d hosts[0].split(\u0027:\u0027)[0]\n  $procrow[\"portno\"] \u003d hosts[0].split(\u0027:\u0027)[1]\n  if hosts[1] then\n    $procrow[\"filename\"] \u003d hosts[1].split(\u0027:\u0027)[0]\n  else\n    $procrow[\"filename\"] \u003d nil\n  end\n\n  $boxes \u003c\u003c $procrow\nend\n\n$boxes.shift",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 4
+      },
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac4a560_7ff50882",
         "filename": "lib/simp-processgraph.rb",
         "patchSetId": 1
