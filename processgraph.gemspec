@@ -12,5 +12,6 @@ Gem::Specification.new do |s|
   s.metadata = {
                  'issue_tracker' => 'https://github.com/simp/rubygem-simp-processgraph-issues'
                }
-  s.license       = ''
+  s.license       = 'Apache-2.0'
+  s.required_ruby_version = '>=1.9.3'
 end

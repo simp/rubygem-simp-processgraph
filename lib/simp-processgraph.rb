@@ -10,10 +10,9 @@
 #
 #######################
 
-require "gviz"
+require 'gviz'
 require 'socket'
 
-$procrow = Hash.new
 $boxes = Array.new {Hash.new}
 $colors = Array['yellow','green','orange','violet', 'turquoise', 'gray','brown']
 
@@ -24,9 +23,6 @@ infile = 'i4_processes'
 # comment out for a test file
 system ("lsof -i4 -n > #{infile}")
 
-# counting number of records in out file
-$proc_counter = 0
-
 # read the file, one line at a time
 IO.foreach(infile) do |line|
   # create a hash for all the significant info 
@@ -36,51 +32,36 @@ IO.foreach(infile) do |line|
   $procrow["proc_id"] = f1[1]
   $procrow["owner"] = f1[2]
   $procrow["procname"] = f1[0]   # process name   
-  wholefilename = f1[8]  # file
-   
-# split the filename -- after the colon is the port, after the -> is the file 
-   portplace = wholefilename.index(':')   
-#puts "file is #{wholefilename}"
-#    see if anything after the colon - which would be the portnumber
-   if (portplace != nil) then     # colon
-     hoststring = wholefilename[0,portplace]
-     portstring = wholefilename[portplace+1,wholefilename.length-1]
-     fileplace = portstring.index('-')
-#    see if anything after the -> which would be the ip we are writing to
-     if (fileplace != nil) && (portstring[fileplace+1] == '>') then        # file nil (and make sure the '-' is part of a '->')
-       port = portstring[0,fileplace]
-       tempfile = portstring[fileplace+2,portstring.length-1]
-       colonplace = tempfile.index(':')
-       if (colonplace == nil) then
-          file=tempfile
-       else
-          file=tempfile[0,colonplace]
-       end
-     else                            # file nil
-       if (portstring != nil) then   # space 
-         port = portstring
-         file = f1[9]
-       else                      # no space
-         port = '0'
-         file = '0'
-       end                       # space?
-     end                             # file nil
-   else                      # no colon
-      port = '0'
-      file = '0'
-   end                       # colon?
-# add those two fields to the array - note the record numbers for all those fields match (proc_counter) so that we can connect them later
+  $wholefilename = f1[8]  # file
+   begin
+   f2 = $wholefilename.split(':')
+   hoststring = f2[0]
+   f3 = f2[1].split("->")
+   file = f3[1]
+   if (file == nil)
+     file = f1[9] 
+   end
+   port = f3[0]
+   rescue
+     if (f1[0] != "COMMAND")
+       puts "unable to parse #{line}"
+     else
+       puts "reading header line"
+     end
+     port = 0
+     file = 0
+     hoststring = "NOHOSTNAME" 
+   end
    $procrow["portno"] = port
    $procrow["filename"] = file
    $procrow["hostname"] = hoststring
 
+# puts "port #{port}, file #{file}, hoststring #{hoststring}"
+
 # write to array (but blow off the headers)
-   if ($proc_counter > 0) then
+   if (hoststring != "NOHOSTNAME") then
      $boxes << $procrow
    end
-
-# increment the record counter
-   $proc_counter += 1
 end                       # end reading file
 
 # prepare an output file to save the hashes for now (this file is a just-in-case)
@@ -212,11 +193,8 @@ if ($boxes.count <= 0) then
   puts "No processes to plot."
 else    
 # write the dot file
-  gv.save(:"#{infile}")
-# convert to jpg
-# note - if this errors out, we still have the dot file.  
-# Conversion may not work on some versions, and may be convertable to the jpg on another system
-  exec "dot -Tjpg #{infile}.dot -o #{infile}.jpg"
+# and write to .png
+  gv.save(:"#{infile}", :png)
 end
 
 # YAY
