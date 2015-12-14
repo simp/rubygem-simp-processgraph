@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac4a560_9e864612",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-12-14T14:29:21Z",
+      "side": 0,
+      "message": "This should be optional.",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_5e93ce4e",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1004834
+      },
+      "writtenOn": "2015-12-14T14:29:21Z",
+      "side": 0,
+      "message": "An object should be created to hold this information. A top level object should be created that would allow for additional resources to be processed in the future (IPv6, etc...)",
+      "revId": "24105ef4a84453277cf1a96c2b1c9b9aad7bf3c7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
