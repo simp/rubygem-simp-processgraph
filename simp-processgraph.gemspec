@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   #   for the published gem
   s.required_ruby_version = '>=2.0.0'
 
-  s.add_runtime_dependency 'gviz',  '~> 0.3.5'
+  # not using this s.add_runtime_dependency 'gviz',  '~> 0.3.5'
 
   # for development
   s.add_development_dependency 'rake',        '~> 10'

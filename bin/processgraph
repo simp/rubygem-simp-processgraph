@@ -3,7 +3,6 @@
 ##
 ## get the command line parameters
 require 'optparse'
-require 'gviz'
 require 'socket'
 require 'simp-processgraph'
 options = {}
