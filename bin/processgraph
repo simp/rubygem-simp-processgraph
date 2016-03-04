@@ -32,5 +32,6 @@ OptionParser.new do |opts|
 end.parse!
 
 # create the graph and then the dot file
-mygraph = SimpProcessGraph_i4.new($inpfile, $outfile)
-mygraph.create_dot
+theGraph = ProcessList.new
+theGraph.processData($infile, $outfile)
+

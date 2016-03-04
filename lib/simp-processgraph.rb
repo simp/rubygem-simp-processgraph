@@ -4,16 +4,53 @@ require 'gv'
 require 'socket'
 
 @@sites
-@@owners
 @@hosts
 @@ips
 @@processes
 
 class ProcessList
-  def initialize(owner)
-    @owner = owner
+  attr_accessor :infile, :outfile
+  def initialize(infile = nil,outfile = nil)
+    @infile = infile 
+    @outfile = outfile 
     @mySiteList = []
- end
+  end
+
+# Process array from file
+  def processData(infile, outfile)
+    puts "starting List"
+    theStart = ProcessList.new
+
+#   read from file
+    dataRead = FileInput(infile, outfile)
+    printArray(dataRead)
+
+#   set up objects based on the record you just read
+    dataRead.each do |record|
+      newSite = theStart.addSite(record["sitename"])
+      newHost = newSite.addHost(record["hostname"])
+      newIP = newHost.addIP(record["localIP"])
+      newProc = newIP.addProc(record["procname"])
+      newPort = newProc.addPort(record["localPort"])
+
+#     destinations
+      destSite = theStart.addSite(record["sitename"])
+      destHost = destSite.addHost(record["hostname"])
+      destIP = destHost.addIP(record["peerIP"])
+      destProc = destIP.addProc(record[""])
+      destPort = destProc.addPort(record["peerPort"])
+      newPort.addConnection(destPort)
+
+# connection
+
+    end
+#  puts "inspect -- #{theStart.inspect}"
+#  puts "************************************"
+#  theStart.printSites
+    theStart.graphProcesses
+    theStart.graphConnections
+
+  end #processData
 
   def addSite(newSite)
     found = false
@@ -124,7 +161,6 @@ class ProcessList
         end #ipList
       end #hostList
     end # site
-  $outputfile = "test"
   puts "starting -- dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
   success = Gv.write($gv, "#{$outputfile}.dot")
   system "dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
@@ -565,44 +601,7 @@ def printArray(allComms)
 #    puts "local IP #{record["localIP"]},lproc #{record["localProc"]},remote IP #{record["peerIP"]},rproc #{record["peerProc"]},socket users #{record["socketUsers"]}" 
 # 
   end
-end #printList
-
-
-# Process array from file
-def processData(infile, outfile)
-  puts "starting List"
-  theStart = ProcessList.new("judy")
-
-# read from file
-  dataRead = FileInput(infile, outfile)
-  printArray(dataRead)
-
-# set up objects based on the record you just read
-  dataRead.each do |record|
-    newSite = theStart.addSite(record["sitename"])
-    newHost = newSite.addHost(record["hostname"])
-    newIP = newHost.addIP(record["localIP"])
-    newProc = newIP.addProc(record["procname"])
-    newPort = newProc.addPort(record["localPort"])
-
-# destinations
-    destSite = theStart.addSite(record["sitename"])
-    destHost = destSite.addHost(record["hostname"])
-    destIP = destHost.addIP(record["peerIP"])
-    destProc = destIP.addProc(record[""])
-    destPort = destProc.addPort(record["peerPort"])
-    newPort.addConnection(destPort)
-
-# connection
-
-  end
-#  puts "inspect -- #{theStart.inspect}"
-#  puts "************************************"
-#  theStart.printSites
-  theStart.graphProcesses
-  theStart.graphConnections
-
-end #processData
+end #printArray
 
 # test
 if __FILE__ == $0
@@ -629,7 +628,8 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-processData($inpfile, $outfile)
+theGraph = ProcessList.new
+theGraph.processData($infile, $outfile)
 
 end # running this file or just required
 

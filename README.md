@@ -22,10 +22,9 @@ In order to create the .png files, you must have graphviz installed
 ```bash
 sudo yum install graphviz
 ```
-
-You may need to install `lsof` in various versions of Linux
+...and the ruby add-on to graphviz
 ```bash
-sudo yum install lsof
+sudo yum install graphviz-ruby
 ```
 
 Below are the functions available under rake:
