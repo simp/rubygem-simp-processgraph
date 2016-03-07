@@ -21,8 +21,8 @@ require_relative 'spec_helper'
 
 describe "testing input directory to process graph" do
 # create a temp dir for output
-  testclass = SimpProcessGraph_i4.new($test_dir, "testdir")
-  testclass.create_dot
+  theGraph = ProcessList.new
+  theGraph.processData($test_dir, "testdir")
   
   it "created dot file from input directory name [testdir]" do
      expect(File).to exist("testdir.dot")

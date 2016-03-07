@@ -7,23 +7,23 @@ require_relative 'spec_helper'
 
 describe "testing process graph with no parms" do
 
-  testclass = SimpProcessGraph_i4.new()
-  testclass.create_dot
+  theGraph = ProcessList.new
+  theGraph.processData(nil, nil)
 
-  it "created input file based on default [i4_processes]" do
-     expect(File).to exist("i4_processes")
+  it "created input file based on default [process_list]" do
+     expect(File).to exist("process_list")
   end
 
-  it "created sorted file based on default" do
-     expect(File).to exist("i4_processes.sorted")
-  end
+#  it "created sorted file based on default" do
+#     expect(File).to exist("process_list.sorted")
+#  end
 
   it "created dot file based on default" do
-     expect(File).to exist("i4_processes.dot")
+     expect(File).to exist("process_list.dot")
   end
 
   it "created png file based on default" do
-     expect(File).to exist("i4_processes.png")
+     expect(File).to exist("process_list.png")
   end
 
 end

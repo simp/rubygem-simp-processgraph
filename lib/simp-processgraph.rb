@@ -3,11 +3,6 @@ require 'optparse'
 require 'gv'
 require 'socket'
 
-@@sites
-@@hosts
-@@ips
-@@processes
-
 class ProcessList
   attr_accessor :infile, :outfile
   def initialize(infile = nil,outfile = nil)
@@ -18,11 +13,38 @@ class ProcessList
 
 # Process array from file
   def processData(infile, outfile)
+    @inputfile = infile
+    @outputfile = outfile
+
+  # get the list of processes to a file
+    infile = 'process_list'
+    @filetype = 'none'
+
+  # check to see if we input a file
+    if @inputfile == nil 
+      @inputfile = infile
+    end
+    if File.directory?@inputfile then
+      @filetype = 'dir'
+    elsif File.file?@inputfile
+      @filetype = 'file'
+    else
+     infile = @inputfile
+     @filetype = 'none'
+    end
+
+# output file
+    if @outputfile == nil then
+      @outputfile = @inputfile
+    end
+puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputfile}"
+
     puts "starting List"
-    theStart = ProcessList.new
+    theStart = self
+#    theStart = ProcessList.new
 
 #   read from file
-    dataRead = FileInput(infile, outfile)
+    dataRead = FileInput(@inputfile, @outputfile, @filetype)
     printArray(dataRead)
 
 #   set up objects based on the record you just read
@@ -41,14 +63,12 @@ class ProcessList
       destPort = destProc.addPort(record["peerPort"])
       newPort.addConnection(destPort)
 
-# connection
-
     end
 #  puts "inspect -- #{theStart.inspect}"
 #  puts "************************************"
 #  theStart.printSites
-    theStart.graphProcesses
-    theStart.graphConnections
+    theStart.graphProcesses(@outputfile)
+    theStart.graphConnections(@outputfile)
 
   end #processData
 
@@ -78,7 +98,7 @@ class ProcessList
     end
   end
  
-  def printSites
+  def printSites()
     puts "printSites -- printing list of #{@mySiteList.size}"
     @mySiteList.each do |sitenm|
       puts "site name is #{sitenm.getSiteName}"
@@ -86,7 +106,8 @@ class ProcessList
     end # site
   end #printSites
 
-  def graphProcesses
+  def graphProcesses(outfile)
+    $outputfile = outfile
 #   init graph
     $gv = Gv.digraph("ProcessGraph")
     puts"ouputting graph"
@@ -94,7 +115,7 @@ class ProcessList
     # rank LR draws left to right which is easier to read
     Gv.layout($gv, 'dot')
     Gv.setv($gv, 'rankdir', 'LR')
-    puts "graphProcesses -- printing list of #{@mySiteList.size}"
+    puts "graphProcesses -- printing list of #{@mySiteList.size} to #{$outputfile}"
     $upno = 0
     $sitecount = 0
     $hostcount = 0
@@ -161,15 +182,16 @@ class ProcessList
         end #ipList
       end #hostList
     end # site
-  puts "starting -- dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
-  success = Gv.write($gv, "#{$outputfile}.dot")
-  system "dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
+#  puts "starting -- dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
+#  success = Gv.write($gv, "#{$outputfile}.dot")
+#  system "dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
 # for now, create the dot this way, see if we can find correction
   puts "done -- dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
   end #graphProcesses
 
-  def graphConnections  
-  puts "outputting connections"
+  def graphConnections (outfile) 
+    $outputfile = outfile
+    puts "outputting connections to #{$outputfile}"
 #   progress through the sites
     @mySiteList.each do |sitenm|
       hostList = sitenm.getHostList
@@ -180,19 +202,19 @@ class ProcessList
           procs.each do |myproc|
             portList = myproc.getPorts
             portList.each do |portnum|
-              puts "port name is #{portnum.getPort}"
+#puts "port name is #{portnum.getPort}"
 #             once more to get connections
-puts "checking connections for port #{portnum.getPort}"
+#puts "checking connections for port #{portnum.getPort}"
               myConns = portnum.getConnections
-puts "port #{portnum.getPort}, connections #{myConns}"    
+#puts "port #{portnum.getPort}, connections #{myConns}"    
               myConns.each do |conn|
                 startNode = portnum.getGraphNode
                 endNode = conn.getGraphNode
-puts "CONNECTING portno #{portnum.getPort} start #{startNode} , end #{endNode}"
+#puts "CONNECTING portno #{portnum.getPort} start #{startNode} , end #{endNode}"
                 if (endNode != nil && startNode != nil) then
                   eg = Gv.edge($gv, startNode, endNode)
                   Gv.setv(eg, 'color', 'black')
-puts "CONNECTING start #{startNode} , end #{endNode} for real"
+#puts "CONNECTING start #{startNode} , end #{endNode} for real"
                 end  # not nil
               end #connections
             end #ports
@@ -200,7 +222,6 @@ puts "CONNECTING start #{startNode} , end #{endNode} for real"
         end #ipList
       end #hostList
     end # site
-  $outputfile = "pretest"
   success = Gv.write($gv, "#{$outputfile}.dot")
 # for now, create the dot this way, see if we can find correction
   system "dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
@@ -453,41 +474,24 @@ class PortNum
 
 end #PortNum
 
-def FileInput(infile, outfile)
+def FileInput(inputfile, outputfile, filetype)
   @allComms = Array.new {Hash.new}
   $infiles = Array.new
+  @inputfile = inputfile
+  @outputfile = outputfile
+  @filetype = filetype
 
-  # get the list of processes to a file
-  infile = 'process_list'
-  $filetype = 'none'
-
-  # check to see if we input a file
-  if @inputfile == nil 
-    @inputfile = infile
-  end
-  if File.directory?@inputfile then
-    $filetype = 'dir'
-  elsif File.file?@inputfile
-    $filetype = 'file'
-  else
-   infile = @inputfile
-   $filetype = 'none'
-  end
-
-  # output file
-  if @outputfile == nil then
-    @outputfile = @inputfile
-  end
-
+puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@outputfile}"
   # this ss command lists processes to a file
   # comment out for a test file
-  if $filetype == 'none'
-#    system ("ss -npa > #{infile}")
-    system ("ss -npat > #{infile}")
-    $filetype = 'file'
+  if @filetype == 'none'
+#    system ("ss -npa > #{@inputfile}")
+    system ("ss -npat > #{@inputfile}")
+    puts "ss -npat > #{@inputfile}"
+    @filetype = 'file'
   end
 
-  if $filetype == 'dir' then
+  if @filetype == 'dir' then
     Dir.foreach(@inputfile) do |infile|
 #      next if infile == '.' or infile == '..'
       if infile.end_with?('lsof') then
@@ -498,7 +502,8 @@ def FileInput(infile, outfile)
     if $infiles.size == 0
        puts "no files found"
     end
-    @inputfile = infile+"_dir"
+#    @inputfile = infile+"_dir"
+    @inputfile = @inputfile+"_dir"
     if @outputfile == nil then
       @outputfile = @inputfile
     end
@@ -616,8 +621,8 @@ OptionParser.new do |opts|
     puts opts
     exit
   end
-  opts.on('-i', '--input outhostname NAME', 'Input file or directory name') do
-    |s| puts "input outhostname is #{s}"
+  opts.on('-i', '--input filename NAME', 'Input file or directory name') do
+    |s| puts "input filename is #{s}"
     $inpfile = s
   end
 
@@ -628,8 +633,10 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-theGraph = ProcessList.new
-theGraph.processData($infile, $outfile)
+puts "infile:  #{$inpfile}, outfile: #{$outfile}"
+
+theGraph = ProcessList.new($inpfile, $outfile)
+theGraph.processData($inpfile, $outfile)
 
 end # running this file or just required
 
