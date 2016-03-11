@@ -45,7 +45,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
 
 #   read from file
     dataRead = FileInput(@inputfile, @outputfile, @filetype)
-    printArray(dataRead)
+#    printArray(dataRead, @inputFile)
 
 #   set up objects based on the record you just read
     dataRead.each do |record|
@@ -531,6 +531,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
       peerProc = ''
       proto = ''
       portName = ''
+      pUser = ''
 
 #     break out the fields  
       begin
@@ -566,7 +567,15 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
         proto = f4[1]
         f5 = proto.split('"')
         procName = f5[1]
-#        puts "procname is #{procName}"
+        puts "procname is #{procName}"
+        remain = f5[2]
+        f6 = remain.split('=')
+        pidplus = f6[1]
+        f7 = pidplus.split(',')
+        thePid = f7[0]
+        puts "the pid is #{thePid}"
+        pUser = `ps --no-header -o user #{thePid}`
+        puts "the user is #{pUser}"
       rescue
 #       ignore everything else
       end
@@ -583,28 +592,28 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
         $datarow["domainname"] = domainname
         $datarow["localIP"] = localIP
         $datarow["localPort"] = localPort
-        $datarow["proto"] = proto
-        $datarow["procname"] = procName
+        $datarow["procname"] = "#{procName}\n#{pUser}"
+        $datarow["processName"] = procName
+        $datarow["puser"] = pUser.strip
         $datarow["peerIP"] = peerIP
         $datarow["peerPort"] = peerPort
         $datarow["socketUsers"] = socketUsers
         @allComms << $datarow
-#        @allComms.push($datarow)
       end # recQ (not header)
     end   # end reading file
     puts "done reading"
-#    printArray(@allComms)
+    printArray(@allComms, inputfile)
   end # end array of files
   return @allComms
 end #FileInput
 
 # Print array from file
-def printArray(allComms)
-  puts "listing my file contents"
+def printArray(allComms, inputFile)
+  puts "listing my file contents in #{inputFile}.ss"
+  outFile = "#{inputFile}.ss"
+  outfile = File.open(outFile, 'w')
   allComms.each do |record|
-#    puts "---- sitename #{record["sitename"]}, hostname #{record["hostname"]}, domainname #{record["domainname"]}" 
-#    puts "local IP #{record["localIP"]},lproc #{record["localProc"]},remote IP #{record["peerIP"]},rproc #{record["peerProc"]},socket users #{record["socketUsers"]}" 
-# 
+  outfile.puts "#{record["sitename"]}, #{record["hostname"]}, #{record["domainname"]}, #{record["localIP"]},#{record["localPort"]}, #{record["processName"]}, #{record["puser"]}, #{record["peerIP"]}, #{record["peerPort"]}" 
   end
 end #printArray
 
