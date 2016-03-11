@@ -158,10 +158,6 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
             Gv.setv(sgd, 'color', 'green')
             Gv.setv(sgd, 'label', "#{myproc.getProc}")
             Gv.setv(sgd, 'shape', 'box')
-#            ng = Gv.node(sgd,"p#{$portcount}")  
-#            Gv.setv(ng, 'label', "p#{myproc.getProc}")
-#            Gv.setv(ng, 'style', 'filled')
-#            Gv.setv(ng, 'shape', 'point')
             $upno +=1
             portList = myproc.getPorts
             portList.each do |portno|
@@ -190,6 +186,8 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
   end #graphProcesses
 
   def graphConnections (outfile) 
+    $colors = Array['yellow','green','orange','violet', 'turquoise', 'gray','brown']
+    count = 0
     $outputfile = outfile
     puts "outputting connections to #{$outputfile}"
 #   progress through the sites
@@ -212,8 +210,11 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
                 endNode = conn.getGraphNode
 #puts "CONNECTING portno #{portnum.getPort} start #{startNode} , end #{endNode}"
                 if (endNode != nil && startNode != nil) then
+                  count += 1
+                  colorcode =  count.modulo($colors.size)
                   eg = Gv.edge($gv, startNode, endNode)
-                  Gv.setv(eg, 'color', 'black')
+                 # connect the dots
+                  Gv.setv(eg, 'color', $colors[colorcode])
 #puts "CONNECTING start #{startNode} , end #{endNode} for real"
                 end  # not nil
               end #connections
