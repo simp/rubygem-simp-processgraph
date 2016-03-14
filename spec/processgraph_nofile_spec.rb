@@ -8,15 +8,11 @@ require_relative 'spec_helper'
 describe "testing process graph with no parms" do
 
   theGraph = ProcessList.new
-  theGraph.processData(nil, nil)
+  theGraph.processData(nil, nil, nil)
 
   it "created input file based on default [process_list]" do
      expect(File).to exist("process_list")
   end
-
-#  it "created sorted file based on default" do
-#     expect(File).to exist("process_list.sorted")
-#  end
 
   it "created dot file based on default" do
      expect(File).to exist("process_list.dot")

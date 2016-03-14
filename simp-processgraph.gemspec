@@ -3,7 +3,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'simp-processgraph'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2016-01-06'
   s.summary     = "Visually displays process communications"
   s.description = "A program that uses dot and graphviz to graph your process relationships"

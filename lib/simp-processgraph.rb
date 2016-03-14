@@ -6,22 +6,30 @@ require 'socket'
 class ProcessList
   attr_accessor :infile, :outfile
   def initialize(infile = nil,outfile = nil)
-    @infile = infile 
-    @outfile = outfile 
+    @infile = infile
+    @outfile = outfile
     @mySiteList = []
   end
+puts "starting ProcessList infile:  #{$infile}, outfile: #{$outfile}"
 
 # Process array from file
-  def processData(infile, outfile)
+  def processData(infile, outfile, sitename)
     @inputfile = infile
     @outputfile = outfile
+    @sitename = sitename
+puts "processData -- infile:  #{infile}, outfile: #{outfile}, sitename: #{sitename}"
 
   # get the list of processes to a file
     infile = 'process_list'
     @filetype = 'none'
 
   # check to see if we input a file
-    if @inputfile == nil 
+    if @inputfile == nil
+#     if file with generic name exists, back it up just in case
+      if File.file?infile
+        File.rename(infile, "#{infile}.bak")
+      end
+      @filetype = 'file'
       @inputfile = infile
     end
     if File.directory?@inputfile then
@@ -44,7 +52,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
 #    theStart = ProcessList.new
 
 #   read from file
-    dataRead = FileInput(@inputfile, @outputfile, @filetype)
+    dataRead = FileInput(@inputfile, @outputfile, @filetype, @sitename)
 #    printArray(dataRead, @inputFile)
 
 #   set up objects based on the record you just read
@@ -56,7 +64,8 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
       newPort = newProc.addPort(record["localPort"])
 
 #     destinations
-      destSite = theStart.addSite(record["sitename"])
+#      destSite = theStart.addSite(record["sitename"])
+      destSite = theStart.addSite("")
       destHost = destSite.addHost(record["hostname"])
       destIP = destHost.addIP(record["peerIP"])
       destProc = destIP.addProc(record[""])
@@ -85,14 +94,14 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
         end # match
       end #each site
     else
-#       puts "first site name is #{newSite}"     
+#       puts "first site name is #{newSite}"
     end # more than one site
 
-    if (!found) then 
+    if (!found) then
       addSite = SiteName.new(newSite)
       @mySiteList << addSite
 #      puts "added site #{newSite} to site list - count is #{@mySiteList.size}"
-      return addSite       
+      return addSite
     else
 #      puts "site #{newSite} is a repeat"
     end
@@ -131,7 +140,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
       Gv.setv(sg, 'label', "#{sitenm.getSiteName}")
       Gv.setv(sg, 'shape', 'box')
       $upno += 1
-#     the hosts 
+#     the hosts
       hostList = sitenm.getHostList
       hostList.each do |host|
         $hostcount += 1
@@ -141,7 +150,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
         Gv.setv(sgb, 'shape', 'box')
         $upno +=1
         puts "host name is #{host.getHostName}"
-        ipList = host.getIPList       
+        ipList = host.getIPList
         ipList.each do |myIP|
           $ipcount += 1
           puts "ip is #{myIP.getIP}"
@@ -167,7 +176,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
               Gv.setv(sge, 'color', 'black')
               Gv.setv(sge, 'label', "#{portno.getPort}")
               Gv.setv(sge, 'shape', 'box')
-              ng = Gv.node(sge,"k#{$portcount}")  
+              ng = Gv.node(sge,"k#{$portcount}")
               Gv.setv(ng, 'label', "#{portno.getPort}")
               Gv.setv(ng, 'style', 'filled')
               Gv.setv(ng, 'shape', 'point')
@@ -185,7 +194,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
   puts "done -- dot -Tpng #{$outputfile}.dot -o #{$outputfile}.png"
   end #graphProcesses
 
-  def graphConnections (outfile) 
+  def graphConnections (outfile)
     $colors = Array['yellow','green','orange','violet', 'turquoise', 'gray','brown']
     count = 0
     $outputfile = outfile
@@ -194,7 +203,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
     @mySiteList.each do |sitenm|
       hostList = sitenm.getHostList
       hostList.each do |host|
-        ipList = host.getIPList       
+        ipList = host.getIPList
         ipList.each do |myIP|
           procs = myIP.getProcs
           procs.each do |myproc|
@@ -204,7 +213,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
 #             once more to get connections
 #puts "checking connections for port #{portnum.getPort}"
               myConns = portnum.getConnections
-#puts "port #{portnum.getPort}, connections #{myConns}"    
+#puts "port #{portnum.getPort}, connections #{myConns}"
               myConns.each do |conn|
                 startNode = portnum.getGraphNode
                 endNode = conn.getGraphNode
@@ -230,7 +239,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} outfile is #{@outputf
 end #ProcessList
 
 ### Site
-class SiteName   
+class SiteName
   attr_accessor :mySiteName
 
   def initialize(mySiteName)
@@ -249,14 +258,14 @@ class SiteName
         end # match
       end #each site
     else
-#       puts "first host name is #{newHost}"     
+#       puts "first host name is #{newHost}"
     end # more than one
 
-    if (!found) then 
+    if (!found) then
       thisHost = HostName.new(newHost)
       @myHostList << thisHost
 #      puts "added #{newHost} to site list - count is #{@myHostList.size}"
-      return thisHost       
+      return thisHost
     else
 #      puts "site #{thisHost.getHostName} is a repeat"
     end
@@ -281,7 +290,7 @@ class SiteName
 end #SiteName
 
 ### Host
-class HostName    
+class HostName
   attr_accessor :myHostName
 
   def initialize(myHostName)
@@ -302,14 +311,14 @@ class HostName
         end # match
       end #each site
     else
-#       puts "first IP name is #{myIP}"     
+#       puts "first IP name is #{myIP}"
     end # more than one
 
-    if (!found) then 
+    if (!found) then
       newIP = IPAddr.new(myIP)
       @myIPList << newIP
 #      puts "added #{myIP} to site list - count is #{@myIPList.size}"
-      return newIP       
+      return newIP
     else
 #      puts "site #{myIP} is a repeat"
     end # found
@@ -328,15 +337,13 @@ class HostName
     @myIPList.each do |ipnm|
       puts "iplist -- name is #{ipnm.getIP}"
       ipnm.printProcs
-    end # IP    
+    end # IP
   end #printIPs
 
 end #HostName
 
-
-
 ### IP
-class IPAddr    
+class IPAddr
   attr_accessor :myIP
 
   def initialize(myIP)
@@ -365,14 +372,14 @@ class IPAddr
         end # match
       end #each site
     else
-#      puts "first Proc name is #{myProc}"     
+#      puts "first Proc name is #{myProc}"
     end # more than one
 
-    if (!found) then 
+    if (!found) then
       newPL = ProcessName.new(myProc)
       @myProcList << newPL
 #      puts "added #{myProc} to site list - count is #{@myProcList.size}"
-      return newPL       
+      return newPL
     else
 #      puts "site #{myPort} is a repeat"
     end # found
@@ -418,14 +425,14 @@ class ProcessName
         end # match
       end #each site
     else
-#      puts "first Port name is #{myPort}"     
+#      puts "first Port name is #{myPort}"
     end # more than one
 
-    if (!found) then 
+    if (!found) then
       newPort = PortNum.new(myPort)
       @myPortList << newPort
 #      puts "added #{myPort} to site list - count is #{@myPortList.size}"
-      return newPort 
+      return newPort
     else
 #      puts "site #{myPort} is a repeat"
     end # found
@@ -435,7 +442,6 @@ class ProcessName
     puts "Port list size is #{@myPortList.size}"
     @myPortList.each do |portno|
       puts "port list -- name is #{portno.getPort}"
-#      puts "port connections #{portno.getConnections.inspect}."
     end # Ports
   end #printPorts
 
@@ -448,7 +454,7 @@ class PortNum
   def initialize(port)
     @port = port
     @myConnects = []
-    @graphNode 
+    @graphNode
   end #initialize
 
   def getPort
@@ -456,9 +462,7 @@ class PortNum
   end
 
   def addConnection(outPort)
-    puts "added connection from #{self.getPort} to  #{outPort.getPort} outport is #{outPort}"
     @myConnects << outPort
-#    puts "inspect connections is #{@myConnects.inspect} - size is #{@myConnects.size}"
   end
 
   def setGraphNode(inNode)
@@ -475,27 +479,27 @@ class PortNum
 
 end #PortNum
 
-def FileInput(inputfile, outputfile, filetype)
+def FileInput(inputfile, outputfile, filetype, mySitename)
   @allComms = Array.new {Hash.new}
   $infiles = Array.new
   @inputfile = inputfile
   @outputfile = outputfile
   @filetype = filetype
+  @mysitename = mySitename
 
-puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@outputfile}"
+puts "filetype is #{@filetype}, infile is #{@inputfile}, outputfile is #{@outputfile}, mysitename is #{@mySitename}"
   # this ss command lists processes to a file
   # comment out for a test file
   if @filetype == 'none'
-#    system ("ss -npa > #{@inputfile}")
+#    system ("ss -npatuw > #{@inputfile}")
     system ("ss -npat > #{@inputfile}")
     puts "ss -npat > #{@inputfile}"
-    @filetype = 'file'
+    @filetype = 'newfile'
   end
-
   if @filetype == 'dir' then
     Dir.foreach(@inputfile) do |infile|
 #      next if infile == '.' or infile == '..'
-      if infile.end_with?('lsof') then
+      if infile.end_with?('ss') then
         $infiles << @inputfile+'/'+infile
       end
     end
@@ -512,14 +516,12 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
     $infiles << @inputfile
   end
   # get rid of any far away directories for our output files
-  @outputfile = File.basename(@outputfile)    
+  @outputfile = File.basename(@outputfile)
 
-  # read each input file in the directory
-  $infiles.each do |infile|
-    $numProcs = 0
+ # if new file, we need to convert the format
+  if (@filetype == 'newfile') then
     counter = 0
-#   read the file, one line at a time
-    IO.foreach(infile) do |line|
+    IO.foreach(@inputfile) do |line|
 #     create a hash for all the significant info
 #      puts "line: #{line}"
       counter += 1
@@ -534,7 +536,7 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
       portName = ''
       pUser = ''
 
-#     break out the fields  
+#     break out the fields
       begin
 #       Netid  State      Recv-Q Send-Q     Local Address:Proc       Peer Address:Proc 
 #       State      Recv-Q Send-Q        Local Address:Proc          Peer Address:Proc  
@@ -581,11 +583,15 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
 #       ignore everything else
       end
 #     current domain and host
-      sitename = "judys site"
+      if (@mysitename == '') then
+        sitename = "here"
+      else
+        sitename = @mysitename
+      end
       hostname = "#{Socket.gethostname}"
-      domainname = "dot.com"
+      domainname = ""
   
-#     write both sets to hashes 
+#     write both sets to hashes
       if (recQ != "recQ" && peerPort != '' && peerPort != nil) then
         $datarow = Hash.new
         $datarow["sitename"] = sitename
@@ -604,7 +610,56 @@ puts "filetype is #{@filetype} and infile is #{@inputfile} and outputfile is #{@
     end   # end reading file
     puts "done reading"
     printArray(@allComms, inputfile)
-  end # end array of files
+  else # not new file
+  # read each input file in the directory
+    $infiles.each do |infile|
+      $numProcs = 0
+      counter = 0
+#     read the file, one line at a time
+      IO.foreach(infile) do |line|
+        begin
+          f1 = line.split(',')
+          puts "number of fields found is #{f1.size}"
+          sitename = f1[0]
+          hostname = f1[1]
+          domainname = f1[2]
+          localIP = f1[3]
+          localPort = f1[4]
+          procName = f1[5]
+          pUser = f1[6]
+          peerIP = f1[7]
+          peerPort = f1[8]
+          socketUsers = ''
+        rescue
+#         ignore everything else
+          puts "badly formatted file, ignoring line #{line}"
+        end
+#       current domain and host
+        if (f1.size < 9) then
+          puts "badly formatted file, ignoring line #{line}"
+        else
+          hostname = "#{Socket.gethostname}"
+          domainname = "dot.com"
+#         write both sets to hashes
+          $datarow = Hash.new
+          $datarow["sitename"] = sitename
+          $datarow["hostname"] = hostname
+          $datarow["domainname"] = domainname
+          $datarow["localIP"] = localIP
+          $datarow["localPort"] = localPort
+          $datarow["procname"] = "#{procName}\n#{pUser}"
+          $datarow["processName"] = procName
+          $datarow["puser"] = pUser
+          $datarow["peerIP"] = peerIP
+          $datarow["peerPort"] = peerPort
+          $datarow["socketUsers"] = socketUsers
+          @allComms << $datarow
+        end #enough fields
+      end   # end reading file
+    end # end array of files
+  end # new file
+  puts "done reading"
+  printArray(@allComms, @outputfile)
   return @allComms
 end #FileInput
 
@@ -614,7 +669,7 @@ def printArray(allComms, inputFile)
   outFile = "#{inputFile}.ss"
   outfile = File.open(outFile, 'w')
   allComms.each do |record|
-  outfile.puts "#{record["sitename"]}, #{record["hostname"]}, #{record["domainname"]}, #{record["localIP"]},#{record["localPort"]}, #{record["processName"]}, #{record["puser"]}, #{record["peerIP"]}, #{record["peerPort"]}" 
+  outfile.puts "#{record["sitename"]}, #{record["hostname"]}, #{record["domainname"]}, #{record["localIP"]},#{record["localPort"]}, #{record["processName"]}, #{record["puser"]}, #{record["peerIP"]}, #{record["peerPort"]}"
   end
 end #printArray
 
@@ -625,28 +680,32 @@ if __FILE__ == $0
 options = {}
 $inpfile = nil
 $outfile = nil
+$mysitename = nil
 OptionParser.new do |opts|
   opts.banner = "Usage: ruby simp_processgraph.rb [options]"
   opts.on('-h', '--help', 'Help') do
     puts opts
     exit
   end
-  opts.on('-i', '--input filename NAME', 'Input file or directory name') do
-    |s| puts "input filename is #{s}"
-    $inpfile = s
+  opts.on('-s', '--my site NAME', 'Enter Site Name') do
+    |s| puts "mysitename is #{s}"
+    $mysitename = s
   end
-
-  out_msg =  'Output file or directory name (will look for files in the directory named *.lsof'
+  opts.on('-i', '--input file NAME', 'Input file or directory name') do
+    |i| puts "input filename is #{i}"
+    $inpfile = i
+  end
+  out_msg =  'Outputfilename (will look for files in the directory named *.ss)'
   opts.on('-o', '--output file NAME', out_msg) do
-    |s| puts "outfile is #{s}"
-    $outfile = s
+    |o| puts "outfile is #{o}"
+    $outfile = o
   end
 end.parse!
 
-puts "infile:  #{$inpfile}, outfile: #{$outfile}"
+puts "infile:  #{$inpfile}, outfile: #{$outfile}, sitename: #{$mysitename}"
 
 theGraph = ProcessList.new($inpfile, $outfile)
-theGraph.processData($inpfile, $outfile)
+theGraph.processData($inpfile, $outfile, $mysitename)
 
 end # running this file or just required
 
