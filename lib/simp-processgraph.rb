@@ -59,13 +59,17 @@ class ProcessList
 
 #     destinations
 #      destSite = theStart.addSite(record["sitename"])
-      destSite = theStart.addSite("")
-      destHost = destSite.addHost(record["hostname"])
-      destIP = destHost.addIP(record["peerIP"])
-      destProc = destIP.addProc(record[""])
-      destPort = destProc.addPort(record["peerPort"])
-      newPort.addConnection(destPort)
-
+      if ( (record["peerIP"]!= "*") && (record["peerPort"]!= "*")) then
+        destSite = theStart.addSite("")
+        destHost = destSite.addHost("")
+        destIP = destHost.addIP(record["peerIP"])
+        destProc = destIP.addProc(record[""])
+        destPort = destProc.addPort(record["peerPort"])
+        newPort.addConnection(destPort)
+        puts "added connection end #{record["hostname"]} #{record["peerIP"]} #{record["peerPort"]}"
+      else
+        puts "no connection end #{record["hostname"]} #{record["peerIP"]} #{record["peerPort"]}"
+      end
     end
 
 #   graph (boxes)
@@ -474,9 +478,14 @@ def FileInput(inputfile, outputfile, filetype, mySitename)
 #     break out the fields
 #       *** for npatuw ***
       begin
+        cancel = false
         f1 = line.split(' ')
         state = f1[1]
         recQ = f1[2]
+        if (recQ == "Recv-Q") then
+          cancel = true
+          puts "empty - line was #{line}"
+        end        
         sendQ = f1[3]
         localAdd = f1[4]
         peerAdd = f1[5]
@@ -484,7 +493,14 @@ def FileInput(inputfile, outputfile, filetype, mySitename)
 #       for the local address split address and proc via colon
         f2 = localAdd.split(':')
         localIP = f2[0]
+        if localIP == "*" then
+          localIP = "ALL"
+        end
         localPort = f2[1]
+        if (localIP == '' && localPort == '') then
+          cancel = true
+          puts "empty - line was #{line}"
+        end
 #       for the dest address split address and proc via colon
         f3 = peerAdd.split(':')
         peerIP = f3[0]
@@ -514,7 +530,7 @@ def FileInput(inputfile, outputfile, filetype, mySitename)
   
 #     write both sets to hashes
 #    ignore header line
-      if (recQ != "Recv-Q") then
+      if (!cancel) then
         $datarow = Hash.new
         $datarow["sitename"] = sitename
         $datarow["hostname"] = hostname
@@ -528,7 +544,7 @@ def FileInput(inputfile, outputfile, filetype, mySitename)
         $datarow["peerPort"] = peerPort
         $datarow["socketUsers"] = socketUsers
         @allComms << $datarow
-      end # recQ (not header)      
+      end # useful line      
     end   # end reading file
     printArray(@allComms, inputfile)
   else # not new file
@@ -539,12 +555,19 @@ def FileInput(inputfile, outputfile, filetype, mySitename)
 #     read the file, one line at a time
       IO.foreach(infile) do |line|
         begin
+          cancel = false
           f1 = line.split(',')
           sitename = f1[0]
           hostname = f1[1]
           domainname = f1[2]
           localIP = f1[3]
+          if localIP == "*" then
+            localIP = "ALL"
+          end
           localPort = f1[4]
+          if (localIP == '' && localPort == '') then
+            cancel = true
+          end
           procName = f1[5]
           pUser = f1[6]
           peerIP = f1[7]
@@ -602,13 +625,13 @@ options = {}
 $inpfile = nil
 $outfile = nil
 $mysitename = nil
-OptionParser.new do |opts|
+optsparse = OptionParser.new do |opts|
   opts.banner = "Usage: ruby simp_processgraph.rb -s sitename [options]"
   opts.on('-h', '--help', 'Help') do
     puts opts
     exit
   end
-  opts.on('-s', '--my site NAME', 'Site Name (required!)') do
+  opts.on('-s', '--my site NAME', :required, 'Site Name (required!)') do
     |s| puts "mysitename is #{s}"
     $mysitename = s
   end
@@ -621,13 +644,13 @@ OptionParser.new do |opts|
     |o| puts "outfile is #{o}"
     $outfile = o
   end
-end.parse!
-if ($mysitename == nil)
-  puts opts
+end
+optsparse.parse!
+if ($mysitename == nil) then
+  puts "Missing argument -s"
+  puts optsparse.banner
   exit
 end
-
-puts "infile:  #{$inpfile}, outfile: #{$outfile}, sitename: #{$mysitename}"
 
 theGraph = ProcessList.new($inpfile, $outfile)
 theGraph.processData($inpfile, $outfile, $mysitename)

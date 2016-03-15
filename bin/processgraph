@@ -10,13 +10,13 @@ options = {}
 $inpfile = nil
 $outfile = nil
 $mysitename = nil
-OptionParser.new do |opts|
-  opts.banner = "Usage: ruby simp_processgraph.rb [options]"
+optsparse = OptionParser.new do |opts|
+  opts.banner = "Usage: processgraph -s sitename [options]"
   opts.on('-h', '--help', 'Help') do
     puts opts
     exit
   end
-  opts.on('-s', '--my site NAME', 'Enter Site Name') do
+  opts.on('-s', '--my site NAME', 'Site Name (required!)') do
     |s| puts "mysitename is #{s}"
     $mysitename = s
   end
@@ -29,7 +29,13 @@ OptionParser.new do |opts|
     |o| puts "outfile is #{o}"
     $outfile = o
   end
-end.parse!
+end
+optsparse.parse!
+if ($mysitename == nil) then
+  puts "Missing argument -s"
+  puts optsparse.banner
+  exit
+end
 
 theGraph = ProcessList.new($inpfile, $outfile)
 theGraph.processData($inpfile, $outfile, $mysitename)
