@@ -5,33 +5,33 @@
 require 'optparse'
 require 'socket'
 require 'simp-processgraph'
+
 options = {}
 $inpfile = nil
 $outfile = nil
-
-# read in options
+$mysitename = nil
 OptionParser.new do |opts|
   opts.banner = "Usage: ruby simp_processgraph.rb [options]"
   opts.on('-h', '--help', 'Help') do
     puts opts
     exit
   end
-
-  # input file or directory
-  opts.on('-i', '--input filename NAME', 'Input file or directory name') do
-    |s| puts "input filename is #{s}"
-     $inpfile = s
+  opts.on('-s', '--my site NAME', 'Enter Site Name') do
+    |s| puts "mysitename is #{s}"
+    $mysitename = s
   end
-
-  # output file
-  out_msg =  'Output file name'
+  opts.on('-i', '--input file NAME', 'Input file or directory name') do
+    |i| puts "input filename is #{i}"
+    $inpfile = i
+  end
+  out_msg =  'Outputfilename (will look for files in the directory named *.ss)'
   opts.on('-o', '--output file NAME', out_msg) do
-    |s| puts "outfile is #{s}"
-    $outfile = s
+    |o| puts "outfile is #{o}"
+    $outfile = o
   end
 end.parse!
 
-# create the graph and then the dot file
-theGraph = ProcessList.new
-theGraph.processData($infile, $outfile)
+theGraph = ProcessList.new($inpfile, $outfile)
+theGraph.processData($inpfile, $outfile, $mysitename)
+
 
