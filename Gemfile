@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'bundler'
-gem 'rake'
+gem 'rake', '~> 10.0'
 gem 'rspec'
 gem 'pry'
+gem 'gv'

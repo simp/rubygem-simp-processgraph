@@ -21,27 +21,27 @@ end
 
 desc 'default - help'
 task :default => [:help]
- 
+
 task :test => [:spec]
- 
+
 desc 'help'
 task :help do
   sh 'rake -T'
 end
 
-desc 'Ensure gemspec-safe permissions on all files'
-task :chmod do
-  gemspec = File.expand_path( "#{@package}.gemspec", @rakefile_dir ).strip
-  spec = Gem::Specification::load( gemspec )
-  spec.files.each do |file|
-    FileUtils.chmod 'go=r', file
-  end
-end
+#desc 'Ensure gemspec-safe permissions on all files'
+#task :chmod do
+#  gemspec = File.expand_path( "#{@package}.gemspec", @rakefile_dir ).strip
+#  spec = Gem::Specification::load( gemspec )
+#  spec.files.each do |file|
+#    FileUtils.chmod 'go=r', file
+#  end
+#end
 
 desc 'run all RSpec tests'
 task :spec do
   Dir.chdir @rakefile_dir
-  rtnval = `bundle exec rspec spec > spec.log`
+  rtnval = `rspec spec > spec.log`
   puts " test results are #{$?}, logged in spec.log"
   if $? != 0
     puts "spec tests failed, results in spec.log"
@@ -52,10 +52,10 @@ end
 
 namespace :pkg do
   desc "build rubygem package for #{@package}"
-  task :gem => :chmod do
+  task :gem do
     Dir.chdir @rakefile_dir
     Dir['*.gemspec'].each do |spec_file|
-      cmd = %Q{SIMP_RPM_BUILD=1 bundle exec gem build "#{spec_file}"}
+      cmd = %Q{SIMP_RPM_BUILD=1 gem build "#{spec_file}"}
       sh cmd
       FileUtils.mkdir_p 'dist'
       FileUtils.mv Dir.glob("#{@package}*.gem"), 'dist/'
@@ -66,7 +66,7 @@ namespace :pkg do
   task :install_gem => [:clean, :gem] do
     Dir.chdir @rakefile_dir
     Dir.glob("dist/#{@package}*.gem") do |pkg|
-      sh %Q{bundle exec gem install #{pkg}}
+      sh %Q{gem install #{pkg}}
     end
   end
 end
