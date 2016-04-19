@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_0d5bd988",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2016-04-19T13:15:59Z",
+      "side": 1,
+      "message": "You may consider making this more concise instead of specific updates which accumulated over time.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 41
+      },
+      "revId": "2650e51875bc8ecd67b95291a05827833abc8b88",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ad506d5f",
+        "filename": "lib/simp-processgraph.rb",
+        "patchSetId": 6
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2016-04-19T13:15:59Z",
+      "side": 1,
+      "message": "WS.  See more below.",
+      "range": {
+        "startLine": 125,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 1
+      },
+      "revId": "2650e51875bc8ecd67b95291a05827833abc8b88",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ed8675da",
+        "filename": "spec/fixtures/sample.ss",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1005194
+      },
+      "writtenOn": "2016-04-19T13:15:59Z",
+      "side": 1,
+      "message": "This should probably not contain externally facing ips and ports.  Would recommend regenerating this on a stand-alone network.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 80
+      },
+      "revId": "2650e51875bc8ecd67b95291a05827833abc8b88",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
