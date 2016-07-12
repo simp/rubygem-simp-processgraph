@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_3047df78",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1008746
+      },
+      "writtenOn": "2016-07-12T16:45:09Z",
+      "side": 1,
+      "message": "Should be process-to-process",
+      "range": {
+        "startLine": 17,
+        "startChar": 57,
+        "endLine": 17,
+        "endChar": 60
+      },
+      "revId": "7a60d163ebf3c161ae68e13edf549ab6c2dc6a6d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
