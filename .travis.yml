@@ -1,0 +1,41 @@
+---
+language: ruby
+cache: bundler
+sudo: required
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y graphviz graphviz-devel graphviz-ruby
+  - rm Gemfile.lock || true
+bundler_args: "--without development --path .vendor"
+notifications:
+  email: false
+rvm:
+  - 2.1.9
+  - 2.3.3
+env:
+  - SIMP_SKIP_NON_SIMPOS_TESTS=1
+script:
+  - RUBYLIB=/usr/lib64/graphviz/ruby bundle exec rake spec
+matrix:
+  fast_finish: true
+before_deploy:
+  - bundle exec rake clobber
+  - "export GEM_VERSION=`ruby -r ./lib/simp/processgraph/version.rb -e 'puts Simp::ProcessGraph::VERSION'`"
+  - '[[ $TRAVIS_TAG =~ ^${GEM_VERSION}$ ]]'
+deploy:
+  - provider: rubygems
+    gemspec: simp-processgraph.gemspec
+    gem: simp-processgraph
+    api_key:
+      secure: "xVFp/NKOC237Kt2VA97uhnkCj7McAhYXgbzPgWExzFtvA/XACgSB1Y6tNOS1R9djZ3B5ILk/XN93sD5dLPbT6X9TYxzU+J3VSVO+tC7eNHU2PS7RNNI1/GI3IAPM/APOKTrfaUryVk1OcQ6JWTn2bGE0kd/mF5XRqNBvFP6MNe9YyC1MKASCAiRHZD02Sq3S8ykbBig16H1vipkhfWits8un+cet5SadOOwZCRkJGMmuCXlSoxqIarJ6joL2ffW9Kbpo4HKnNo0Oj2RNvHyVbfe/W1B04woqLaDoDUZ4GxROqW2L49uhN0NILzoNU9oU7f+BRnW1gG6C5lIAB1RZWlangds8as43yAIb0Y8m9dtSIQiZUKstt6kC7naDtdYPD1VDPv/Gg0TplebT3nAkCoK5oTAc/gMH4zd3cvEHBGoN+XJNNnOXhHM5hc46iraBmRa3487/xvaNUSc0cNq1m2x32qSqv2ux76pzEenzq5rxa4CsGtJwkpR9FINMEyJpA/anTauBKtDuPkG4ZpwO0ltRfxEV7OyElBxlMcsdmp+gWp8kMLWCCyrcXzstorHDMXs63LYpaEBU10ceXrSMYgc/OrmEH4hnMOXo9WFPzgHB68b6OP1pfPnUPjHIiE8dNLoF9mCwO8rVl3EbdDIGB5wB5T7kcBHiGXViZyqNCFE="
+    on:
+      tags: true
+      rvm: 2.1.9
+      condition: "($SKIP_PUBLISH != true)"
+  - provider: releases
+    api_key:
+      secure: "fL4Sr1a97HgwWlukC+cO8HCk963svGnkUMBoHppmtkterqvp2jULUxTo2H36zWQyInO9BB2iVcN9gOl9G1kkPI3MnnzAlkCSSIOgyRSjcMvI44osGDURf0nk4dWyKbzcTRFFfVa/9fxt98U1qUg2t9uMBf3hf+eUT1+GAEegQoiqRIxbKQtAYAkCIxD8MFXmTHSzuDwG4UbhZdmQzAeDY+NAJZiySGDV2JAYUye5VjuXrEeFiISvd4FMLSzfKzmd79OVZ3tlxCYgFAss+Zznvm3KT4ifD5t6Ro8uaAnmJBH1XEmAd22hUp8aHPWL1XVoyi3dxZqHB1Nf4Bk0QVWOu8BeVCIUeXO9cAOAdKiBHQ5PdOPpZN8wXE/stoXUGe4an9AqJoWYFGISLrKQyxNg2e9KrqEsfNkqwUYJJ0J5qlxt2cQFjn9UzKDF7t+PWhsP9vqQV+86av1RcjdVOMFpIs/OJzQwmZRwlk4YisMNREmj8wtG6Vj7zqQ2/468yznd7Yj8PTcLtQtWWhhpLXvEKRvjoaY58g2b9x7+cGn/usP1OUKsgvzs+s9dqPSSEGQScphUKy9vtpwAHw2V1daCMleeQxioJkxUaMtNb+1SZ+iOkKT1UzEq1OmBWtcUbEuoB0iRcNfkkGfQqVrRFcgZoPzLVK5yUapkiBCX4Nl7g34="
+    on:
+      tags: true
+      rvm: 2.1.9
+      condition: "($SKIP_PUBLISH != true)"
