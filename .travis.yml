@@ -10,7 +10,7 @@ before_install:
 bundler_args: "--without development --path .vendor"
 notifications:
   email: false
-# graphviz libraries are compiled against system ruby because the library is installed from yum which uses system ruby
+# graphviz libraries installed from RPM are dynmically linked to the system ruby libraries
 rvm:
   - system
 env:
