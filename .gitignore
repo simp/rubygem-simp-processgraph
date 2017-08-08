@@ -1,1 +1,9 @@
-/Gemfile.lock
+*.gem
+*.swp
+Gemfile.lock
+.bundle/
+*.old
+spec.log
+.vagrant
+/log
+/spec/fixtures
