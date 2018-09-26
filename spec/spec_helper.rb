@@ -15,12 +15,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'simplecov'
-SimpleCov.start do
-  add_filter "/spec/" # don't count coverage of test files!
-  add_filter "/ext/"  # don't count coverage of highline library included in the rpm
-end
-
 RSpec.configure do |config|
   $LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
   # rspec-expectations config goes here. You can use an alternate
@@ -93,3 +87,11 @@ RSpec.configure do |config|
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
 end
+
+=begin
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/spec/" # don't count coverage of test files!
+  add_filter "/ext/"  # don't count coverage of highline library included in the rpm
+end
+=end
