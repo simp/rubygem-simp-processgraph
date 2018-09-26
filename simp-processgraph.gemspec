@@ -22,14 +22,19 @@ Gem::Specification.new do |s|
 
   # gem dependencies
   #   for the published gem
-  s.required_ruby_version = '>=1.8.7'
+  s.required_ruby_version = '>= 1.8.7'
+
+  s.add_runtime_dependency 'gv',        '~> 0.1.0'
 
   # for development
   s.add_development_dependency 'rake',        '~> 10'
   s.add_development_dependency 'rspec',       '~> 3'
 
   # simple text description of external requirements (for humans to read)
-  s.requirements << 'SIMP OS installation'
+  s.requirements << [
+    'The following packages are required to run:',
+    ' + graphviz-devel'
+  ].join("\n")
 
   # ensure the gem is built out of versioned files
   s.files = Dir['Rakefile', '{bin,lib,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z .`.split("\0")
