@@ -13,7 +13,7 @@ test_dir = home_dir + '/ssfiles'
 this_dir = File.expand_path('.')
 sample_file = 'spec/fixtures/sample.ss'
 unless File.directory?(test_dir)
-  stderr.puts "created directory, copied in #{sample_file}"
+  $stderr.puts "created directory, copied in #{sample_file}"
   FileUtils.mkdir(test_dir)
 end
 FileUtils.cp(sample_file, test_dir)

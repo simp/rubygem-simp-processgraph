@@ -16,7 +16,7 @@ describe 'testing input raw and ss to processgraph' do
 
   # read sample raw file 
   sample_file = "#{Dir.pwd}/spec/fixtures/#{rawfile}"
-  puts sample_file
+  $stdout.puts sample_file
   Dir.chdir(outdir) do
     the_graph = ProcessList.new(sample_file, nil, true)
     the_graph.process_data(site_name, 0)
@@ -32,7 +32,7 @@ describe 'testing input raw and ss to processgraph' do
 
   # read sample ss file 
   sample_file = "#{Dir.pwd}/spec/fixtures/#{ssfile}"
-  puts sample_file
+  $stdout.puts sample_file
   Dir.chdir(outdir) do
     the_graph = ProcessList.new(sample_file, nil, false)
     the_graph.process_data(site_name, 0)

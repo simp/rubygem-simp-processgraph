@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   #   for the published gem
   s.required_ruby_version = '>= 1.8.7'
 
-  s.add_runtime_dependency 'gv',        '~> 0.1.0'
+  s.add_runtime_dependency 'graphviz'
 
   # for development
   s.add_development_dependency 'rake',        '~> 10'

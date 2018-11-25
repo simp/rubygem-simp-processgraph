@@ -24,6 +24,7 @@
 require 'optparse'
 require 'gv'
 require 'socket'
+require 'simp-processgraph'
 
 # ProcessList creates the list of processes from which we create a graph
 class ProcessList

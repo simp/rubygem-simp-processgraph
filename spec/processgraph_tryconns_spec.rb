@@ -18,7 +18,7 @@ describe 'testing default to port' do
   Dir.chdir(outdir) do
     the_graph = ProcessList.new(nil, file_name, false)
     con_type = the_graph.instance_variable_get(:@port_conn)
-puts ("con_type is #{con_type}")
+    $stdout.puts ("con_type is #{con_type}")
     the_graph.process_data(site_name, con_type)
   end
   # make sure you get a dotfile
