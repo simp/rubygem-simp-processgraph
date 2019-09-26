@@ -25,6 +25,7 @@ require 'optparse'
 require 'gv'
 require 'socket'
 require 'simp-processgraph'
+require 'resolv' # resolve hostnames
 
 # ProcessList creates the list of processes from which we create a graph
 class ProcessList
@@ -629,8 +630,15 @@ def file_input(inputfile, outputfile, filetype, site_name)
 
           # for the dest address split address and proc via colon
           peer_ip = peer_add.rpartition(':').first
-          peer_ip = 'ALL' if (peer_ip == '*') || (peer_ip[0..1] == '::')
-          cancel = true if (peer_ip == '::1') || (peer_ip == '127.0.0.1')
+          cancel = true if (peer_ip.include? "::") || (peer_ip == '127.0.0.1')|| (peer_ip == '*%virbr0') 
+
+         # get hostname from ip if possible
+          if (peer_ip == '*') || (peer_ip == '::') 
+             peer_ip = 'ALL'
+          else
+            peer_ip = Resolv.getname(peer_ip)
+          end
+
           peer_port = peer_add.rpartition(':').last
 
           # create peer record and local record and associate the numbers
@@ -646,7 +654,6 @@ def file_input(inputfile, outputfile, filetype, site_name)
           proc_user = `ps --no-header -o user #{the_pid}`.strip
         rescue StandardError
           # ignore everything else
-          # puts "error parsing raw file #{infile}, ignoring line #{line}"
         end
 
         # current domain and host
