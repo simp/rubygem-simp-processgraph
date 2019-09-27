@@ -1,9 +1,9 @@
 # -*- ruby -*-
 
-require "rubygems"
 require 'rake/clean'
 require 'fileutils'
 require 'find'
+require 'rspec/core/rake_task'
 
 @package='simp-processgraph'
 @rakefile_dir=File.dirname(__FILE__)
@@ -11,7 +11,6 @@ require 'find'
 CLEAN.include "#{@package}-*.gem"
 CLEAN.include 'pkg'
 CLEAN.include 'dist'
-CLEAN.include 'spec.log'
 Find.find( @rakefile_dir ) do |path|
   if File.directory? path
     CLEAN.include path if File.basename(path) == 'tmp'
@@ -30,6 +29,8 @@ task :help do
   sh 'rake -T'
 end
 
+RSpec::Core::RakeTask.new(:spec)
+
 #desc 'Ensure gemspec-safe permissions on all files'
 #task :chmod do
 #  gemspec = File.expand_path( "#{@package}.gemspec", @rakefile_dir ).strip
@@ -38,18 +39,6 @@ end
 #    FileUtils.chmod 'go=r', file
 #  end
 #end
-
-desc 'run all RSpec tests'
-task :spec do
-  Dir.chdir @rakefile_dir
-  rtnval = `rspec spec > spec.log`
-  puts " test results are #{$?}, logged in spec.log"
-  if $? != 0
-     puts IO.read('spec.log')
-  else
-    puts "spec tests passed - results are #{$?}, logged in spec.log"
-  end
-end
 
 namespace :pkg do
   desc "build rubygem package for #{@package}"

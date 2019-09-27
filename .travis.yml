@@ -4,13 +4,13 @@ cache: bundler
 sudo: required
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y graphviz libgraphviz-dev libgv-ruby
-  - sudo gem install bundler
+  - sudo apt-get install -y graphviz libgraphviz-dev libgv-ruby ruby-dev
+#  - sudo gem install bundler
   - rm Gemfile.lock || true
-bundler_args: "--without development --path .vendor"
+bundler_args: "--path .vendor"
 notifications:
   email: false
-# graphviz libraries installed from RPM are dynmically linked to the system ruby libraries
+# graphviz libraries installed from RPM are dynamically linked to the system ruby libraries
 rvm:
   - system
 env:
