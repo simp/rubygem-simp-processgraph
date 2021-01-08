@@ -15,8 +15,13 @@ rvm:
   - system
 env:
   - SIMP_SKIP_NON_SIMPOS_TESTS=1
-script:
-  - RUBYLIB=/usr/lib64/graphviz/ruby bundle exec rake spec
+###  Testing on Travis CI is indefinitely disabled
+###
+###  See:
+###    * https://blog.travis-ci.com/2020-11-02-travis-ci-new-billing
+###    * https://simp-project.atlassian.net/browse/SIMP-8703
+script: skip
+###  - RUBYLIB=/usr/lib64/graphviz/ruby bundle exec rake spec
 matrix:
   fast_finish: true
 before_deploy:
