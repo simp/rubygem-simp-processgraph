@@ -1,5 +1,5 @@
 ---
-language: shell
+language: ruby
 notifications:
   email: false
 # graphviz libraries installed from RPM are dynmically linked to the system ruby libraries
