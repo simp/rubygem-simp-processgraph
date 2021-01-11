@@ -18,24 +18,24 @@ matrix:
 jobs:
   include:
     - stage: deploy
-	  script: skip
-	  ###  - RUBYLIB=/usr/lib64/graphviz/ruby bundle exec rake spec
-	  cache: bundler
-	  before_install:
-	    - sudo apt-get update -qq
+      script: skip
+      ###  - RUBYLIB=/usr/lib64/graphviz/ruby bundle exec rake spec
+      cache: bundler
+      before_install:
+        - sudo apt-get update -qq
         - sudo apt-get install -y graphviz libgraphviz-dev libgv-ruby
         - sudo gem install bundler
         - rm Gemfile.lock || true
       sudo: required
       bundler_args: "--without development --path .vendor"
-	  language: ruby
-	  rvm:
-	    - system
-	  before_deploy:
-	    - bundle exec rake clobber
+      language: ruby
+      rvm:
+        - system
+      before_deploy:
+        - bundle exec rake clobber
         - "export GEM_VERSION=`ruby -r ./lib/simp/processgraph/version.rb -e 'puts Simp::ProcessGraph::VERSION'`"
         - '[[ $TRAVIS_TAG =~ ^${GEM_VERSION}$ ]]'
-	  deploy:
+      deploy:
         - provider: rubygems
           gemspec: simp-processgraph.gemspec
           gem: simp-processgraph
